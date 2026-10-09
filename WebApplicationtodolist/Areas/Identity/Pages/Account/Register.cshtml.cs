@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -137,9 +136,10 @@ namespace WebApplicationtodolist.Areas.Identity.Pages.Account
                     ModelState.AddModelError("Email", "الايميل ده موجود بالفعل! لو ناسي الباسورد اعمل تسجيل دخول");
                     return Page();
                 }
-                catch (SqlException sqlEx)
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("Email", "الايميل ده موجود بالفعل! لو ناسي الباسورد اعمل تسجيل دخول");
+                    // Generic failure
+                    ModelState.AddModelError("", "حدث خطأ أثناء إنشاء الحساب. حاول مرة أخرى لاحقاً.");
                     return Page();
                 }
 
@@ -148,6 +148,25 @@ namespace WebApplicationtodolist.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+                    // If this is the first user in the system, make them Admin; otherwise assign User role
+                    try
+                    {
+                        var totalUsers = _userManager.Users.Count();
+                        if (totalUsers == 1)
+                        {
+                            if (!await _userManager.IsInRoleAsync(user, "Admin"))
+                                await _userManager.AddToRoleAsync(user, "Admin");
+                        }
+                        else
+                        {
+                            if (!await _userManager.IsInRoleAsync(user, "User"))
+                                await _userManager.AddToRoleAsync(user, "User");
+                        }
+                    }
+                    catch
+                    {
+                        // role assignment non-fatal here
+                    }
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

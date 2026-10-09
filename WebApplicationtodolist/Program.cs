@@ -10,7 +10,7 @@ builder.WebHost.UseUrls("http://*:8080");
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite("Data Source=app.db"));
 
 // Configure Identity
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -51,33 +51,26 @@ app.MapStaticAssets();
 app.MapRazorPages();
 app.MapDefaultControllerRoute();
 
-// Apply pending migrations and seed roles/admin at startup
+// Ensure database is created and seed basic roles. Make first registered user Admin via Register page logic.
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var db = services.GetRequiredService<WebApplicationtodolist.Data.AppDbContext>();
-        db.Database.Migrate();
+        db.Database.EnsureCreated();
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-        var roles = new[] { "Admin", "Teacher", "Student" };
+        var roles = new[] { "Admin", "User" };
         foreach (var role in roles)
         {
-            if (!await roleManager.RoleExistsAsync(role))
-                await roleManager.CreateAsync(new IdentityRole(role));
-        }
-
-        var myUser = await userManager.FindByEmailAsync("abdlmobdy868@gmail.com");
-        if (myUser != null && !await userManager.IsInRoleAsync(myUser, "Admin"))
-        {
-            await userManager.AddToRoleAsync(myUser, "Admin");
+            if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
+                roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
         }
     }
     catch
     {
-        // ignore migration/seeding failures here; they should be addressed in deployment logs
+        // ignore startup db/role errors; surfaced during deployment if occur
     }
 }
 
