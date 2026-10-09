@@ -1,0 +1,73 @@
+﻿@model WebApplicationtodolist.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "الرئيسية";
+}
+
+<section class="hero text-white py-5 mb-4" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:16px;padding:40px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="display-5 fw-bold">مرحبا بك في منصتك التعليمية 🚀</h1>
+                <p class="lead mt-3">مكان واحد لإدارة المواد، الواجبات، ومتابعة التقدم الدراسي — بتصميم عصري وسهل الاستخدام.</p>
+                <a asp-controller="Materials" asp-action="Index" class="btn btn-gradient btn-lg mt-3">تصفح المواد</a>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block">
+                <img src="https://cdn.jsdelivr.net/gh/saifster/placeholder@main/education-illustration.svg" alt="hero" style="max-width:320px;" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">📚</div>
+                <div class="h6">عدد المواد</div>
+                <div class="display-6">@Model.WithFiles</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">📝</div>
+                <div class="h6">عدد التاسكات</div>
+                <div class="display-6">@Model.TotalTasks</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">⏰</div>
+                <div class="h6">المتأخرة</div>
+                <div class="display-6 text-danger">@Model.OverdueTasks</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">📎</div>
+                <div class="h6">المرفقات</div>
+                <div class="display-6">@Model.WithFiles</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>المواد</h5>
+                <p class="text-muted">تصفح المواد الدراسية ورفع الموارد الخاصة بالمحاضرات.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>التاسكات</h5>
+                <p class="text-muted">تابع واجباتك وسلم الحلول عبر GitHub بسهولة.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>تسجيلاتي</h5>
+                <p class="text-muted">ملخص مهامك، ملفاتك، وتقدمك.</p>
+            </div>
+        </div>
+    </div>
+</div>

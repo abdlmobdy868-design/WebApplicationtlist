@@ -1,0 +1,20 @@
+## Visual Studio / .NET
+.vs/
+bin/
+obj/
+out_publish/
+
+# User-specific
+*.user
+*.suo
+
+# Database
+*.db
+*.db-journal
+app.db
+
+# Logs
+*.log
+
+# OS
+.DS_Store

@@ -1,0 +1,10 @@
+<div class="form-group">
+    <label for="country">البلد</label>
+    <select id="country" name="country" required>
+        <option value="">-- اختار بلدك --</option>
+        <option value="Egypt">مصر</option>
+        <option value="Saudi">السعودية</option>
+        <option value="UAE">الامارات</option>
+        <option value="Other">اخرى</option>
+    </select>
+</div>

@@ -1,0 +1,38 @@
+﻿@model TodoItem
+@{
+    var isCreate = Model?.Id == 0;
+}
+
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-lg p-4 rounded-4" style="max-width:720px;width:100%">
+        <h4 class="mb-3">@(isCreate ? "إضافة مهمة" : "تعديل المهمة")</h4>
+        <form asp-action="@(isCreate ? "Create" : "Edit")" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-floating mb-3">
+                <input asp-for="Title" class="form-control" placeholder="عنوان المهمة" />
+                <label asp-for="Title">العنوان</label>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <textarea asp-for="Description" class="form-control" style="height:120px" placeholder="وصف"></textarea>
+                <label asp-for="Description">الوصف</label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">الموعد النهائي</label>
+                <input asp-for="Deadline" type="datetime-local" class="form-control" />
+            </div>
+            <div class="mb-3">
+                @if (!string.IsNullOrEmpty(Model?.FilePath))
+                {
+                    <p>ملف حالي: <a asp-action="Download" asp-route-fileName="@Model.FilePath">تنزيل</a></p>
+                }
+                <label class="form-label">رفع ملف (اختياري)</label>
+                <input type="file" name="file" class="form-control" />
+            </div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-gradient me-2">حفظ</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">الغاء</a>
+            </div>
+        </form>
+    </div>
+</div>

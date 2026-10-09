@@ -1,0 +1,52 @@
+@model List<CourseMaterial>
+@{
+    ViewData["Title"] = "المواد";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>المواد</h2>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-gradient">اضافة مادة جديدة +</a>
+    }
+</div>
+
+<form method="get" class="mb-4">
+    <div class="input-group">
+        <input name="search" class="form-control" placeholder="بحث في المواد..." />
+        <button class="btn btn-outline-light border">بحث</button>
+    </div>
+</form>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="card text-center p-4">
+        <div class="h1">📭</div>
+        <h4 class="mt-2">لسه مفيش مواد</h4>
+        <p class="text-muted">ابدأ باضافة اول مادة</p>
+        @if (User.IsInRole("Admin")) { <a asp-action="Create" class="btn btn-gradient">اضافة مادة</a> }
+    </div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var m in Model)
+        {
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="card card-hover h-100 p-3">
+                    <div class="ratio ratio-16x9 bg-light rounded mb-2 d-flex align-items-center justify-content-center">
+                        <span class="text-muted">صورة</span>
+                    </div>
+                    <h5 class="mb-1">@m.Title</h5>
+                    <p class="text-muted small mb-2">@m.Description</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">@m.UploadDate.ToString("yyyy-MM-dd")</small>
+                        @if(!string.IsNullOrEmpty(m.FilePath)){
+                            <a asp-action="Download" asp-route-id="@m.Id" class="btn btn-sm btn-outline-success">تنزيل</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

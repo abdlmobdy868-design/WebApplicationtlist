@@ -1,0 +1,29 @@
+﻿@model TodoItem
+<h2>@(Model.Id == 0 ? "Create Task" : "Edit Task")</h2>
+
+<form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Deadline"></label>
+        <input asp-for="Deadline" type="datetime-local" class="form-control" />
+    </div>
+    <div class="mb-3">
+        @if (Model.FilePath != null)
+        {
+            <a asp-action="Download" asp-route-fileName="@Model.FilePath">Current File: Download</a><br />
+        }
+        <label>Upload File</label>
+        <input type="file" name="file" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-info">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>

@@ -1,0 +1,61 @@
+﻿@model List<TodoItem>
+@{
+    ViewData["Title"] = "التاسكات";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>التاسكات</h2>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-gradient">إضافة مهمة جديدة +</a>
+    }
+</div>
+
+<div class="row g-3">
+    @foreach (var item in Model)
+    {
+        var isOverdue = item.Deadline < DateTime.Now;
+        var timeLeft = item.Deadline - DateTime.Now;
+        string badgeClass = "badge bg-success";
+        string badgeText = "قادمة";
+        if (isOverdue)
+        {
+            badgeClass = "badge bg-danger";
+            badgeText = "متأخرة";
+        }
+        else if (timeLeft.TotalDays <= 2)
+        {
+            badgeClass = "badge bg-warning text-dark";
+            badgeText = "قريبة";
+        }
+
+        <div class="col-sm-6 col-md-4">
+            <div class="card card-hover h-100 p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="mb-0">@item.Title</h5>
+                    <span class="@badgeClass">@badgeText</span>
+                </div>
+                <p class="text-muted mb-2">@item.Description</p>
+                <p class="small text-muted">الموعد النهائي: @item.Deadline.ToString("yyyy-MM-dd HH:mm")</p>
+                <div class="mt-auto d-flex gap-2">
+                    @if (!string.IsNullOrEmpty(item.FilePath))
+                    {
+                        <a asp-action="Download" asp-route-fileName="@item.FilePath" class="btn btn-sm btn-outline-success">تنزيل</a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">تعديل</a>
+                        <form method="post" asp-action="Delete" asp-route-id="@item.Id" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-outline-primary">تسليم الحل - GitHub</button>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

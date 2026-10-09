@@ -1,0 +1,41 @@
+@model List<WebApplicationtodolist.Models.AdminUserViewModel>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="container mt-4" dir="rtl">
+    <h3>المستخدمين</h3>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>الايميل</th>
+                <th>الأدوار</th>
+                <th>اجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.UserName</td>
+                    <td>@u.Email</td>
+                    <td>@string.Join(", ", u.Roles)</td>
+                    <td>
+                        @if (!u.Roles.Contains("Admin"))
+                        {
+                            <form method="post" asp-controller="Admin" asp-action="MakeAdmin" class="d-inline">
+                                <input type="hidden" name="id" value="@u.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">اجعل ادمن</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Admin</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,83 @@
+@model WebApplicationtodolist.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "لوحة تحكم";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">لوحة تحكم الادمن</h2>
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">👨‍🎓</div>
+                <div class="h6">إجمالي المستخدمين</div>
+                <div class="display-6">@Model.TotalUsers</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">📚</div>
+                <div class="h6">المواد</div>
+                <div class="display-6">@Model.TotalCourses</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">📝</div>
+                <div class="h6">التاسكات</div>
+                <div class="display-6">@Model.TotalTasks</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card p-3 card-hover text-center">
+                <div class="h1 text-gradient">📎</div>
+                <div class="h6">المرفقات</div>
+                <div class="display-6">—</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-3 mb-4">
+        <h5>Recent Activity</h5>
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <thead>
+                    <tr><th>الحدث</th><th>المستخدم</th><th>الوقت</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>تم إنشاء مادة جديدة</td><td>ali@example.com</td><td>قبل ساعة</td></tr>
+                    <tr><td>تم تسليم الواجب</td><td>sara@example.com</td><td>منذ يوم</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card p-3">
+                <h5>Charts</h5>
+                <canvas id="adminChart" height="150"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Quick Actions</h5>
+                <p><a href="/Admin/Users" class="btn btn-gradient">Manage Users</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var ctx = document.getElementById('adminChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['مواد','تاسكات','طلاب'],
+                    datasets: [{ label: 'مقاييس', data: [@Model.TotalCourses, @Model.TotalTasks, @Model.TotalUsers], backgroundColor: ['#667eea','#764ba2','#34c38f'] }]
+                }
+            });
+        }
+    </script>
+}
