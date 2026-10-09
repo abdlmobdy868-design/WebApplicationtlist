@@ -47,18 +47,19 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+// Serve wwwroot static files
+app.UseStaticFiles();
 app.MapRazorPages();
 app.MapDefaultControllerRoute();
 
-// Ensure database is created and seed basic roles. Make first registered user Admin via Register page logic.
+// Apply migrations and seed basic roles. Make first registered user Admin via Register page logic.
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        var db = services.GetRequiredService<WebApplicationtodolist.Data.AppDbContext>();
-        db.Database.EnsureCreated();
+        var context = services.GetRequiredService<WebApplicationtodolist.Data.AppDbContext>();
+        context.Database.Migrate();
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var roles = new[] { "Admin", "User" };
