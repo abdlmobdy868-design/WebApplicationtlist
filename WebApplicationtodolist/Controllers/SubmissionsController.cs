@@ -5,6 +5,7 @@ using WebApplicationtodolist.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 [Authorize]
 public class SubmissionsController : Controller
@@ -12,9 +13,10 @@ public class SubmissionsController : Controller
     private readonly AppDbContext _db;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public SubmissionsController(AppDbContext db)
+    public SubmissionsController(AppDbContext db, UserManager<IdentityUser> userManager)
     {
         _db = db;
+        _userManager = userManager;
     }
 
     // Student: create or edit submission for an assignment
@@ -26,19 +28,32 @@ public class SubmissionsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Submission s)
+    public async Task<IActionResult> Create(Submission s, IFormFile upload)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.Identity?.Name;
         s.StudentId = userId;
-        s.SubmittedAt = DateTime.Now;
+        s.SubmittedAt = DateTime.UtcNow;
+
+        // handle file upload if present
+        if (upload != null && upload.Length > 0)
+        {
+            var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "submissions");
+            if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(upload.FileName);
+            var filePath = Path.Combine(uploads, fileName);
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await upload.CopyToAsync(stream);
+            }
+            s.FilePath = Path.Combine("uploads", "submissions", fileName).Replace('\\', '/');
+        }
 
         // if exists, update instead
         var existing = _db.Submissions.FirstOrDefault(x => x.AssignmentId == s.AssignmentId && x.StudentId == s.StudentId);
         if (existing != null)
         {
-            existing.GitHubLink = s.GitHubLink;
-            existing.Note = s.Note;
-            existing.SubmittedAt = DateTime.Now;
+            if (!string.IsNullOrEmpty(s.FilePath)) existing.FilePath = s.FilePath;
+            existing.SubmittedAt = DateTime.UtcNow;
             _db.Submissions.Update(existing);
         }
         else

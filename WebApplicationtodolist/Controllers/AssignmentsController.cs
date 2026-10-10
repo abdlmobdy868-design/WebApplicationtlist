@@ -46,7 +46,7 @@ public class AssignmentsController : Controller
             var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
             using (var stream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
                 await file.CopyToAsync(stream);
-            a.FilePath = fileName;
+            a.FilePath = Path.Combine("uploads", "assignments", fileName).Replace('\\','/');
         }
 
         _db.Assignments.Add(a);

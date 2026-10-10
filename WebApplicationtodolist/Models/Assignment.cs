@@ -15,6 +15,9 @@ namespace WebApplicationtodolist.Models
         // optional SubjectId to link to subject/ course grouping
         public int? SubjectId { get; set; }
 
+        // optional uploaded file for assignment (e.g., instructions)
+        public string? FilePath { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
