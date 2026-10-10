@@ -29,6 +29,13 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+// Ensure database migrations are applied at startup (creates tables without deleting data)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<WebApplicationtodolist.Data.AppDbContext>();
+    db.Database.Migrate();
+}
+
 
 
 
