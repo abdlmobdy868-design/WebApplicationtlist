@@ -1,0 +1,41 @@
+@model List<WebApplicationtodolist.Models.Submission>
+@{
+    ViewData["Title"] = "Submissions";
+}
+<div class="container" dir="rtl">
+    <h3 class="text-end" style="color:#4F46E5">المرسلات</h3>
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>طالب</th>
+                <th>واجب</th>
+                <th>ملف</th>
+                <th>درجة</th>
+                <th>ملاحظات</th>
+                <th>أرسل في</th>
+                <th>حفظ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var s in Model)
+            {
+                <tr>
+                    <td>@s.StudentId</td>
+                    <td>@s.AssignmentId</td>
+                    <td><a href="/@s.FilePath" target="_blank">تحميل</a></td>
+                    <td>
+                        <form asp-action="Grade" method="post" class="d-flex">
+                            <input type="hidden" name="id" value="@s.Id" />
+                            <input type="number" name="grade" value="@(s.Grade ?? 0)" class="form-control form-control-sm me-2" style="width:80px" />
+                            <input type="text" name="feedback" value="@s.Feedback" class="form-control form-control-sm me-2" />
+                            <button class="btn btn-sm" style="background-color:#4F46E5;color:white">حفظ</button>
+                        </form>
+                    </td>
+                    <td>@s.Feedback</td>
+                    <td>@s.SubmittedAt.ToLocalTime()</td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,25 +1,26 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
-public class Submission
+namespace WebApplicationtodolist.Models
 {
-    public int Id { get; set; }
+    public class Submission
+    {
+        public int Id { get; set; }
 
-    [Required]
-    public int AssignmentId { get; set; }
+        [Required]
+        public int AssignmentId { get; set; }
 
-    // Student identifier (string) - link to Identity user id
-    [Required]
-    public string StudentId { get; set; }
+        // Student identifier (string) - link to Identity user id
+        [Required]
+        public string StudentId { get; set; }
 
-    [Required]
-    [RegularExpression(@".*github\.com.*", ErrorMessage = "Link must be a GitHub URL")]
-    public string GitHubLink { get; set; }
+        // File uploaded path under wwwroot/uploads
+        public string FilePath { get; set; }
 
-    public string? Note { get; set; }
+        public int? Grade { get; set; }
 
-    public DateTime SubmittedAt { get; set; } = DateTime.Now;
+        public string? Feedback { get; set; }
 
-    public int? Grade { get; set; }
-
-    public string? Feedback { get; set; }
+        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+    }
 }

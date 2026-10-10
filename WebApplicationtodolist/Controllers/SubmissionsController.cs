@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using WebApplicationtodolist.Data;
 using WebApplicationtodolist.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 [Authorize]
 public class SubmissionsController : Controller
 {
     private readonly AppDbContext _db;
+    private readonly UserManager<IdentityUser> _userManager;
 
     public SubmissionsController(AppDbContext db)
     {
